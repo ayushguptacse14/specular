@@ -58,7 +58,7 @@ npx hardhat node
 ```
 
 Above command will start a Ethereum node serving as L1.
-It can be accessed via `http://localhost:8545` or `ws://localhost:8545`.
+It can be accessed via `http://0.0.0.0:8545` or `ws://0.0.0.0:8545`.
 
 It is configured to mine immediately when there is any transaction, or after 5 seconds idle.
 

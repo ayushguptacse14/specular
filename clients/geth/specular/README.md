@@ -62,7 +62,7 @@ Do not forget to reset MetaMask account if you have sent some transactions on L2
 Both accounts are pre-funded with 10 ETH each on L2 network, and you can use them to send transactions. Note: on L2, these two accounts are just normal accounts; not to be confused with the sequencer/validator roles on L1 (the addresses are just being reused).
 2. In `Settings -> Networks`, create a new network called `L2` which connects to the sequencer.
 The sequencer node should be running while creating the network.
-Enter `http://localhost:4011` for RPC URL, `13527` for Chain ID, `ETH` for currency symbol (we haven't changed the symbol yet).
+Enter `http://0.0.0.0:4011` for RPC URL, `13527` for Chain ID, `ETH` for currency symbol (we haven't changed the symbol yet).
 
 **Transact**
 

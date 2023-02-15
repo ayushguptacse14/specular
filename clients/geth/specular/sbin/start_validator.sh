@@ -14,7 +14,7 @@ $GETH_SPECULAR_DIR/build/bin/geth \
     --authrpc.port 8561 \
     --rollup.node 'validator' \
     --rollup.coinbase=70997970c51812dc3a010c7d01b50e0d17dc79c8 \
-    --rollup.l1endpoint 'ws://localhost:8545' \
+    --rollup.l1endpoint 'ws://0.0.0.0:8545' \
     --rollup.l1chainid 31337 \
     --rollup.sequencer-addr '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266' \
     --rollup.sequencer-inbox-addr '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0' \

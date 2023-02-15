@@ -79,7 +79,7 @@ var (
 	pprofAddrFlag = &cli.StringFlag{
 		Name:     "pprof.addr",
 		Usage:    "pprof HTTP server listening interface",
-		Value:    "127.0.0.1",
+		Value:    "0.0.0.0",
 		Category: flags.LoggingCategory,
 	}
 	memprofilerateFlag = &cli.IntFlag{

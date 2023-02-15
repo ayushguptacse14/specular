@@ -15,7 +15,7 @@ $GETH_SPECULAR_DIR/build/bin/geth \
     --authrpc.port 8562 \
     --rollup.node 'indexer' \
     --rollup.coinbase=f39fd6e51aad88f6f4ce6ab8827279cfffb92266 \
-    --rollup.l1endpoint 'ws://localhost:8545' \
+    --rollup.l1endpoint 'ws://0.0.0.0:8545' \
     --rollup.l1chainid 31337 \
     --rollup.sequencer-inbox-addr '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0' \
     --rollup.rollup-addr '0x0165878A594ca255338adfa4d48449f69242Eb8F' \
