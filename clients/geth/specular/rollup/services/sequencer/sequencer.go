@@ -416,8 +416,8 @@ func (s *Sequencer) confirmationLoop(ctx context.Context) {
 					if err != nil {
 						log.Error("Failed to reject first unresolved assertion", "err", err)
 					}
+					pendingConfirmed = true
 				}
-				pendingConfirmed = true
 			case ev := <-confirmedCh:
 				log.Info("Received `AssertionConfirmed` event ", "assertion id", ev.AssertionID)
 				// New confirmed assertion
