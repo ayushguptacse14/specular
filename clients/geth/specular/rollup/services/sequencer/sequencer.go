@@ -340,7 +340,12 @@ func (s *Sequencer) confirmationLoop(ctx context.Context) {
 	defer s.Wg.Done()
 
 	// Watch AssertionRejected event
-	rejectAssertionCh := make(chan *bindings.IRollupAssertionRejected, 4096)
+	rejectedCh := make(chan *bindings.IRollupAssertionRejected, 4096)
+	rejectedSub, err := s.L1Client.WatchAssertionRejected(&bind.WatchOpts{Context: ctx}, rejectedCh)
+	if err != nil {
+		log.Crit("Failed to watch rollup event", "err", err)
+	}
+	defer rejectedSub.Unsubscribe()
 
 	// Watch AssertionConfirmed event
 	confirmedCh := make(chan *bindings.IRollupAssertionConfirmed, 4096)
@@ -402,14 +407,14 @@ func (s *Sequencer) confirmationLoop(ctx context.Context) {
 						pendingConfirmationSent = true
 					}
 				}
-			case <-rejectAssertionCh:
+			case <-rejectedCh:
 				if !pendingConfirmed {
 					// Reject the first unresolved assertion if all the conditions are met
 					// (1) challenge period has passed, 
 					// (2) at least one staker exists, 
 					// (3) no staker remains staked on the assertion (all have been destroyed).
 					
-					_, err := s.Rollup.RejectFirstUnresolvedAssertion(common.Address)
+					_, err := s.L1Client.RejectFirstUnresolvedAssertion(s.Config.SequencerAddr)
 					if errors.Is(err, core.ErrInsufficientFunds) {
 						log.Error("Insufficient Funds to send Tx", "error", err)
 					}
