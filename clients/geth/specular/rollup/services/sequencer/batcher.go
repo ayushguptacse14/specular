@@ -2,7 +2,6 @@ package sequencer
 
 import (
 	"errors"
-	"fmt"
 	"math/big"
 	"time"
 
@@ -15,6 +14,7 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/trie"
 	"github.com/specularl2/specular/clients/geth/specular/rollup/services"
+	"github.com/specularl2/specular/clients/geth/specular/rollup/utils/fmt"
 )
 
 type Batch struct {
