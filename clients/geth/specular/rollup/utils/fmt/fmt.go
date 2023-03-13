@@ -1,3 +1,4 @@
+// This file call fmt for all functions except Error and Errorf
 package fmt
 
 import (
