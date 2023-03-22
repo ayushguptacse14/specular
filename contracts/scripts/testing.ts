@@ -19,69 +19,137 @@ const l1Provider = new ethers.providers.JsonRpcProvider(
   "http://localhost:8545"
 );
 
-// Test tx flow
-async function testTxs(toAddress: string, value: BigNumber) {
-  // Signer is sequencer
+// Setup signers
+export async function setupSigners(
+  sequencerPrivateKeyPath: string,
+  validatorPrivateKeyPath: string
+) {
   const sequencerPrivateKey = fs.readFileSync(sequencerPrivateKeyPath, "utf8");
-  const signer = new Wallet(sequencerPrivateKey, l2Provider);
-  const nonce = await l2Provider.getTransactionCount(signer.address);
+  const sequencerSigner = new Wallet(sequencerPrivateKey, l2Provider);
 
-  const sequencerContractAddress = sequencerInboxJson.address;
-  const rollupContractAddress = rollupJson.address;
+  const validatorPrivateKey = fs.readFileSync(validatorPrivateKeyPath, "utf8");
+  const validatorSigner = new Wallet(validatorPrivateKey, l2Provider);
 
-  // Contracts
+  return {
+    sequencerSigner,
+    validatorSigner,
+  };
+}
+
+// Initialize contracts and event filters
+function initializeContracts(
+  sequencerContractAddress: string,
+  sequencerContractAbi: any,
+  rollupContractAddress: string,
+  rollupContractAbi: any
+) {
   const sequencerContract = new ethers.Contract(
     sequencerContractAddress,
-    sequencerInboxJson.abi,
+    sequencerContractAbi,
     l1Provider
   );
   const rollupContract = new ethers.Contract(
     rollupContractAddress,
-    rollupJson.abi,
+    rollupContractAbi,
     l1Provider
   );
 
-  // Event filters
   const appendTxFilter = sequencerContract.filters.TxBatchAppended();
   const assertionCreatedFilter = rollupContract.filters.AssertionCreated();
   const assertionConfirmedFilter = rollupContract.filters.AssertionConfirmed();
 
-  // Tx
+  return {
+    sequencerContract,
+    rollupContract,
+    appendTxFilter,
+    assertionCreatedFilter,
+    assertionConfirmedFilter,
+  };
+}
+
+// Send a tx
+async function sendTx(sequencerSigner: any, toAddress: any, value: number) {
+  const nonce = await l2Provider.getTransactionCount(sequencerSigner.address);
+
   const txData = {
     to: toAddress,
     value: value,
     nonce: nonce,
   };
 
-  // Send Tx to L2
-  const txResponse = await signer.sendTransaction(txData);
+  const txResponse = await sequencerSigner.sendTransaction(txData);
   await txResponse.wait();
 
-  // Check Tx added to L2
   const txReceipt = await l2Provider.getTransactionReceipt(txResponse.hash);
   assert(txReceipt, "No tx on L2 blockchain");
 
-  // Wait a few secs
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  return txResponse;
+}
 
-  // Check AppendTx event
-  const appendTxLogs = await sequencerContract.queryFilter(appendTxFilter);
-  console.log("this is appendTxLogs: ", appendTxLogs);
-  // assert(appendTxLogs.length > 0, "No appended txs");
+// Check logs
+async function checkLogs(contract: any, filter: any) {
+  const logs = await contract.queryFilter(filter);
+  console.log("Logs: ", logs);
+  assert(logs.length > 0, "No matching logs found");
+}
 
-  // Check Assertion creation
-  const assertionCreatedLogs = await rollupContract.queryFilter(
-    assertionCreatedFilter
+// test Tx
+async function testTx(
+  sequencerSigner: any,
+  validatorSigner: any,
+  sequencerContract: any,
+  rollupContract: any,
+  appendTxFilter: any,
+  assertionCreatedFilter: any,
+  assertionConfirmedFilter: any,
+  toAddress: any,
+  value: any
+) {
+  const txResponse = await sendTx(sequencerSigner, toAddress, value);
+
+  //await checkLogs(sequencerContract, appendTxFilter);
+  //await checkLogs(rollupContract, assertionCreatedFilter);
+  await checkLogs(rollupContract, assertionConfirmedFilter);
+
+  return txResponse;
+}
+
+// New Test tx flow
+async function testTxs(toAddress: string, value: BigNumber) {
+  const { sequencerSigner, validatorSigner } = await setupSigners(
+    sequencerPrivateKeyPath,
+    validatorPrivateKeyPath
   );
-  console.log("this is assertionCreatedLogs: ", assertionCreatedLogs);
-  assert(assertionCreatedLogs.length > 0, "No created assertions");
 
-  // Check Assertion confirmation
-  const assertionConfirmedLogs = await rollupContract.queryFilter(
-    assertionConfirmedFilter
+  const sequencerContractAddress = sequencerInboxJson.address;
+  const rollupContractAddress = rollupJson.address;
+
+  const {
+    sequencerContract,
+    rollupContract,
+    appendTxFilter,
+    assertionCreatedFilter,
+    assertionConfirmedFilter,
+  } = initializeContracts(
+    sequencerContractAddress,
+    sequencerInboxJson.abi,
+    rollupContractAddress,
+    rollupJson.abi
   );
-  console.log("this is assertionConfirmedLogs: ", assertionConfirmedLogs);
-  // assert(assertionConfirmedLogs.length > 0, "No confirmed assertions");
+
+  for (let i = 0; i < 1; i++) {
+    const res = await testTx(
+      sequencerSigner,
+      validatorSigner,
+      sequencerContract,
+      rollupContract,
+      appendTxFilter,
+      assertionCreatedFilter,
+      assertionConfirmedFilter,
+      toAddress,
+      value
+    );
+  }
 }
 
 // Send multiple Txs
