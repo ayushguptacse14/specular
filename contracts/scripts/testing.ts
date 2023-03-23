@@ -108,8 +108,8 @@ async function testTx(
   const txResponse = await sendTx(sequencerSigner, toAddress, value);
 
   //await checkLogs(sequencerContract, appendTxFilter);
-  //await checkLogs(rollupContract, assertionCreatedFilter);
-  await checkLogs(rollupContract, assertionConfirmedFilter);
+  await checkLogs(rollupContract, assertionCreatedFilter);
+  //await checkLogs(rollupContract, assertionConfirmedFilter);
 
   return txResponse;
 }
