@@ -5,7 +5,7 @@ import { exec } from "child_process";
 import util from "util";
 import path from "path";
 
-const CLIENT_SBIN_DIR = "../../clients/geth/specular/sbin";
+const CLIENT_SBIN_DIR = "../clients/geth/specular/sbin";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts, ethers, upgrades, network } = hre;
@@ -22,7 +22,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   try {
     const { stdout: pwdOutput } = await execPromise("pwd && ls -la");
     console.log("initial VM hash path is:",pwdOutput);
-    const { stdout: pwdOutput1 } = await execPromise("cd ../.. && pwd && ls -la");
+    const { stdout: pwdOutput1 } = await execPromise("cd ../clients/geth/specular/sbin && pwd && ls -la");
     console.log("initial VM hash path ../.. is:",pwdOutput1);
 
     const { stdout } = await execPromise(
