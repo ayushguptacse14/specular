@@ -22,14 +22,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   try {
     const { stdout: pwdOutput } = await execPromise("pwd && ls -la");
     console.log("initial VM hash path is:",pwdOutput);
-    const { stdout: pwdOutput1 } = await execPromise("cd .. && pwd && ls -la");
+    const { stdout: pwdOutput1 } = await execPromise("cd ../clients && pwd && ls -la");
     console.log("initial VM hash path 1 is:",pwdOutput1);
-    const { stdout: pwdOutput2 } = await execPromise("cd clients/ && pwd && ls -la");
-    console.log("initial VM hash path 2 is:",pwdOutput2);
-    const { stdout: pwdOutput3 } = await execPromise("cd geth/ && pwd && ls -la");
-    console.log("initial VM hash path 3 is:",pwdOutput3);
-    const { stdout: pwdOutput4 } = await execPromise("cd specular/ && pwd && ls -la");
-    console.log("initial VM hash path 4 is:",pwdOutput4);
 
     const { stdout } = await execPromise(
       path.join(CLIENT_SBIN_DIR, "export_genesis.sh")
