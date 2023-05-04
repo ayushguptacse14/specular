@@ -5,7 +5,7 @@ import { exec } from "child_process";
 import util from "util";
 import path from "path";
 
-const CLIENT_SBIN_DIR = "../clients/geth/specular/sbin";
+const CLIENT_SBIN_DIR = "../../clients/geth/specular/sbin";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts, ethers, upgrades, network } = hre;
