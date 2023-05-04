@@ -22,8 +22,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   try {
     const { stdout: pwdOutput } = await execPromise("pwd && ls -la");
     console.log("initial VM hash path is:",pwdOutput);
-
-    const { stdout: pwdOutput1 } = await execPromise("pwd && ls -la");
+    const { stdout: pwdOutput1 } = await execPromise("cd ../.. && pwd && ls -la");
     console.log("initial VM hash path ../.. is:",pwdOutput1);
 
     const { stdout } = await execPromise(
