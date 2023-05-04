@@ -1,9 +1,10 @@
 FROM node:16-alpine3.17
-COPY ./contracts /specular/contracts
+COPY . /specular
 
 RUN apk add --no-cache git
 
-WORKDIR /specular/contracts
+WORKDIR /specular
+RUN cd contracts
 RUN apk add --no-cache python3 make g++
 RUN yarn install --frozen-lockfile && npx hardhat compile
 
