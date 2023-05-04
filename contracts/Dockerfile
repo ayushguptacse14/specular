@@ -3,8 +3,7 @@ COPY . /specular
 
 RUN apk add --no-cache git
 
-WORKDIR /specular
-RUN cd contracts
+WORKDIR /specular/contracts
 RUN apk add --no-cache python3 make g++
 RUN yarn install --frozen-lockfile && npx hardhat compile
 
